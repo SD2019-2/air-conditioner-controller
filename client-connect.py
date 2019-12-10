@@ -19,8 +19,8 @@ def on_message(client, userdata, msg):
     print("Message received: ", m_decode)
 
 broker = "35.193.185.214"
-topicIn = "esp1in"
-topicOut = "esp1out"
+topicIn = "esp1Led1Topic"
+topicOut = "esp1TempTopic"
 
 client = mqtt.Client("python1")
 
@@ -29,11 +29,20 @@ client.on_connect = on_connect
 client.on_log = on_log
 client.on_message = on_message
 
+option = input("Select the option: ")
+
 print("Connecting to broker: ", broker)
 client.connect(broker)
 client.loop_start()
-client.subscribe(topicOut)
-client.publish(topicIn, "my msg with client.py")
+time.sleep(1)
+
+if option == 'p':
+    while True: 
+        sendAmount = input("Select the brightness to send to the led: (0-1024) ")
+        client.publish(topicIn, "b{}".format(sendAmount))
+elif option == 's':
+    client.subscribe(topicOut)
+    
 time.sleep(4000)
 client.loop_stop()
 client.disconnect()
